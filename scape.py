@@ -13,7 +13,7 @@ import networkx as nx
 import numpy as np
 
 class scape(object):
-    netdict={"grid":nx.grid_2d_graph,"ring":nx.cycle_graph} 
+    netdict={"grid":nx.grid_2d_graph,"ring":nx.cycle_graph,"random graph":nx.gnm_random_graph,"regular graph":nx.random_regular_graph} 
     rand_method={"uniform":np.random.uniform,"normal":np.random.normal}
     def __init__(self,type,*para,**namepara):
         self.land=scape.netdict[type](*para)
@@ -49,6 +49,12 @@ class scape(object):
     def del_agent(self,agent):
         self.land.node[agent.coordinate]["agent"]=None
         
+    def add_link(self,left,right):
+        self.land.add_edge(left.coordinate,right.coordinate)
+        
+    def cut_link(self,left,right):
+        self.land.remove_edge(left.coordinate,right.coordinate)        
+        
     def init_coordinate(self):
         for n in self.land.nodes(data=True):
             if n[1]["agent"] is not None:
@@ -66,7 +72,7 @@ class scape(object):
         agent.coordinate=coordinate
     
     def neighbors_of(self,agent):
-        return [self.land.node[neighbor]["agent"] for neighbor in nx.all_neighbors(self.land,agent.coordinate) if self.land.node[neighbor]["agent"] is not None]
+        return [self.land.node[neighbor]["agent"] for neighbor in self.land[agent.coordinate] if self.land.node[neighbor]["agent"] is not None]
             
     def neighbor_coordinates_of(self,agent):
         return [neighbor for neighbor in nx.all_neighbors(self.land,agent.coordinate)]        
@@ -74,11 +80,6 @@ class scape(object):
     def display(self):
         nx.draw(self.land)
         
-    def show(self):
-        for i in self.land.nodes(data=True):
-            if i[1]["agent"] is not None:
-                print i[1]["agent"]
-                print i[1]["agent"].neighbors
             
 
 

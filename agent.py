@@ -10,6 +10,7 @@ Programming:Zhang Hong
 
 import random
 import copy
+import funclib
 
 class agent(object):
     def __init__(self,strategy):
@@ -28,6 +29,10 @@ class agent(object):
         for n in self.neighbors:
             neighbor_coor.remove(n.coordinate)
         return neighbor_coor
+    
+    @property
+    def has_neighbor(self):
+        return bool(len(self.neighbors))
         
     @property
     def neighbors(self):
@@ -39,7 +44,20 @@ class agent(object):
     def reproduce(self,coordinate):
         new_agent=copy.copy(self)
         self.scape.add_agent(new_agent,coordinate)
+        
+    def imitate(self,right):
+        self.strategy=right.strategy
+        
+    def imitate_by_func(self,right,func=funclib.fermi(1)):
+        if random.random()<func(self,right):
+            self.imitate(right)
+        
+    def cut_link_with(self,right):
+        self.scape.cut_link(self,right)
     
+    def add_link_with(self,right):
+        self.scape.add_link(self,right)
+        
     def die(self):
         self.scape.del_agent(self)
         
