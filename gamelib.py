@@ -14,6 +14,6 @@ class PD(object):
         assert T>R>P>S,"must satisfy condition:T>R>P>S"
         self.game_matrix={("c","c"):(R,R),("c","d"):(S,T),("d","c"):(T,S),("d","d"):(P,P)}
         
-    def do(self,left,right):
+    def __call__(self,left,right):
         return self.game_matrix[(left.strategy,right.strategy)]
         
