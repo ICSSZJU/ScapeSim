@@ -14,17 +14,17 @@ import numpy as np
 
 class scape(object):
     netdict={"grid":nx.grid_2d_graph,"ring":nx.cycle_graph,"random graph":nx.gnm_random_graph,"regular graph":nx.random_regular_graph} 
-    rand_method={"uniform":np.random.uniform,"normal":np.random.normal}
+
     def __init__(self,type,*para,**namepara):
         self.land=scape.netdict[type](*para)
         self.type=type
     
     def __getitem__(self,coordinate):
-        return self.land.node[coordinate]
+        return self.land.node[coordinate]["agent"]
+        
     @property
     def capacity(self):
         return len(self.land)
-
         
     def add_agents(self,agents):
         self.agents=agents
@@ -48,6 +48,7 @@ class scape(object):
         
     def del_agent(self,agent):
         self.land.node[agent.coordinate]["agent"]=None
+        del agent
         
     def add_link(self,left,right):
         self.land.add_edge(left.coordinate,right.coordinate)
@@ -60,9 +61,6 @@ class scape(object):
             if n[1]["agent"] is not None:
                 n[1]["agent"].coordinate=n[0]
             
-    def set_scape_attr(self,name,method,*para):
-        for i in self.land.nodes(data=True):
-            i[1]["attr"][name]=scape.rand_method[method](*para)
     
     def move(self,agent,coordinate):
         assert agent.coordinate!=coordinate,"can't move to original coordinate"
@@ -75,10 +73,19 @@ class scape(object):
         return [self.land.node[neighbor]["agent"] for neighbor in self.land[agent.coordinate] if self.land.node[neighbor]["agent"] is not None]
             
     def neighbor_coordinates_of(self,agent):
-        return [neighbor for neighbor in nx.all_neighbors(self.land,agent.coordinate)]        
+        return [neighbor for neighbor in nx.all_neighbors(self.land,agent.coordinate)]  
+    
+    def non_occupied(self):
+        return [node for node in self.land.nodes() if self[node]==None]
         
-    def display(self):
-        nx.draw(self.land)
+    def is_occupied(self,coordinate):
+        return bool(self[coordinate])
+        
+    def __str__(self):
+        return "scape:type="+str(self.type)+",capacity="+str(self.capacity)
+        
+    def __repr__(self):
+        return self.__str__()
         
             
 
