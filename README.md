@@ -1,4 +1,4 @@
-scapesim
+ScapeSim
 ========
 
-a module for develop agent-based simulation
+A module for simulating spatial game dynamics
