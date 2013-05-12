@@ -13,7 +13,9 @@ import networkx as nx
 import numpy as np
 
 class scape(object):
-    netdict={"grid":nx.grid_2d_graph,"ring":nx.cycle_graph,"random graph":nx.gnm_random_graph,"regular graph":nx.random_regular_graph} 
+    netdict={"grid":nx.grid_2d_graph,"ring":nx.cycle_graph,
+             "random graph":nx.gnm_random_graph,"regular graph":nx.random_regular_graph,
+             "small world":nx.newman_watts_strogatz_graph,"scale free":nx.scale_free_graph} 
 
     def __init__(self,type,*para,**namepara):
         self.land=scape.netdict[type](*para)
